@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wage Owed Oregon — Tipped Worker Pay Calculator</title>
+  <meta name="description" content="Estimate Oregon minimum wage, overtime, unpaid break time, and final paycheck exposure. Oregon does not allow tip credits: tips cannot count against hourly pay.">
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --surface: #141821;
+      --surface2: #1d2330;
+      --border: #2c3546;
+      --text: #eef2f7;
+      --muted: #9aa7b8;
+      --accent: #66e3c4;
+      --accent2: #49bda1;
+      --danger: #ff6b7a;
+      --warn: #ffc857;
+      --good: #4cd37b;
+      --blue: #6aa9ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, rgba(102, 227, 196, 0.10), transparent 32rem), var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container { max-width: 1040px; margin: 0 auto; padding: 24px; }
+    header { padding: 36px 0 20px; text-align: center; }
+    .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 700; }
+    h1 { margin: 8px 0 12px; font-size: clamp(2rem, 5vw, 4rem); line-height: 1.02; }
+    .subtitle { color: var(--muted); max-width: 760px; margin: 0 auto; font-size: 1.08rem; }
+    .callout {
+      margin: 24px auto 0;
+      max-width: 820px;
+      padding: 16px 18px;
+      border: 1px solid rgba(102, 227, 196, .35);
+      background: rgba(102, 227, 196, .08);
+      border-radius: 16px;
+      text-align: left;
+    }
+    .callout strong { color: var(--accent); }
+    .grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr); gap: 18px; align-items: start; }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: rgba(20, 24, 33, .94);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.22);
+    }
+    .card h2 { margin: 0 0 12px; font-size: 1.15rem; }
+    .section-note { color: var(--muted); font-size: .9rem; margin: -4px 0 14px; }
+    label { display: block; font-size: .86rem; color: var(--muted); margin: 12px 0 6px; }
+    input, select {
+      width: 100%;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(102, 227, 196, .12); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 580px) { .row { grid-template-columns: 1fr; } }
+    .hint { color: var(--muted); font-size: .78rem; margin-top: 5px; }
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin: 12px 0 4px; }
+    .toggle-row input { width: auto; }
+    button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #07100e;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.05); }
+    .result-total {
+      border: 1px solid rgba(255, 107, 122, .38);
+      background: rgba(255, 107, 122, .08);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .result-total .label { color: var(--muted); font-size: .86rem; }
+    .result-total .value { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 850; color: var(--danger); line-height: 1; margin: 6px 0; }
+    .result-total.clean { border-color: rgba(76,211,123,.35); background: rgba(76,211,123,.08); }
+    .result-total.clean .value { color: var(--good); }
+    .breakdown { display: grid; gap: 10px; }
+    .line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .line:last-child { border-bottom: 0; }
+    .line span:first-child { color: var(--muted); }
+    .line span:last-child { font-weight: 750; text-align: right; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 2px; }
+    .pill { padding: 6px 9px; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: .8rem; }
+    .pill strong { color: var(--text); }
+    details {
+      margin-top: 14px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    summary { cursor: pointer; font-weight: 700; }
+    ul { color: var(--muted); padding-left: 20px; }
+    a { color: var(--accent); }
+    .footer { margin: 28px 0 14px; color: var(--muted); font-size: .88rem; }
+    .source-list { display: grid; gap: 8px; margin-top: 8px; }
+    .source-list a { word-break: break-word; }
+    .warning-box { border-color: rgba(255,200,87,.36); background: rgba(255,200,87,.08); }
+    .warning-box strong { color: var(--warn); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">Oregon wage-hour calculator</div>
+      <h1>Tips are yours.</h1>
+      <p class="subtitle">Oregon does not allow tip credits. Your employer cannot count your tips against minimum wage. Estimate what you may be owed for minimum wage, overtime, worked-through breaks, and late final pay.</p>
+      <div class="callout">
+        <strong>Core rule:</strong> Oregon BOLI states: “Tip credits are illegal in Oregon. Your tips are yours and cannot be counted against your hourly pay.” This calculator treats tips as separate from wages paid by the employer.
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>1. Workweek details</h2>
+        <p class="section-note">Use one workweek, then multiply by repeated weeks if the pattern happened more than once.</p>
+
+        <label for="region">Where did you work?</label>
+        <select id="region">
+          <option value="standard">Standard Oregon — $15.05/hour</option>
+          <option value="portland">Portland Metro urban growth boundary — $16.30/hour</option>
+          <option value="nonurban">Nonurban counties — $14.05/hour</option>
+        </select>
+        <div class="hint">Rates shown are for July 1, 2025 through June 30, 2026.</div>
+
+        <div class="row">
+          <div>
+            <label for="actualHours">Hours actually worked</label>
+            <input id="actualHours" type="number" min="0" step="0.01" value="42">
+            <div class="hint">Include all time you were required to work.</div>
+          </div>
+          <div>
+            <label for="weeks">Number of weeks</label>
+            <input id="weeks" type="number" min="1" step="1" value="1">
+            <div class="hint">Repeated weekly pattern.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="unpaidMealMinutes">Worked-through meal minutes not paid</label>
+            <input id="unpaidMealMinutes" type="number" min="0" step="1" value="0">
+            <div class="hint">Example: 30 if a meal was deducted but you worked.</div>
+          </div>
+          <div>
+            <label for="unpaidRestMinutes">Unpaid rest-break minutes</label>
+            <input id="unpaidRestMinutes" type="number" min="0" step="1" value="0">
+            <div class="hint">Oregon rest breaks are paid work time.</div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 22px;">2. Pay you received</h2>
+        <div class="row">
+          <div>
+            <label for="cashPaid">Cash wages paid by employer</label>
+            <input id="cashPaid" type="number" min="0" step="0.01" value="600">
+            <div class="hint">Per week. Do not include tips.</div>
+          </div>
+          <div>
+            <label for="tips">Tips received</label>
+            <input id="tips" type="number" min="0" step="0.01" value="150">
+            <div class="hint">Shown for context only. Not counted as wages.</div>
+          </div>
+        </div>
+
+        <label for="promisedRate">Promised regular hourly rate, if above minimum wage</label>
+        <input id="promisedRate" type="number" min="0" step="0.01" placeholder="Optional">
+        <div class="hint">If blank, the calculator uses the Oregon minimum wage for your region. If you were promised more, overtime is estimated from that higher regular rate.</div>
+
+        <details>
+          <summary>Optional: final paycheck penalty estimate</summary>
+          <div class="toggle-row">
+            <input id="includePenalty" type="checkbox">
+            <label for="includePenalty" style="margin:0;color:var(--text);">Estimate possible late final paycheck penalty</label>
+          </div>
+          <label for="daysLate">Days final wages were late</label>
+          <input id="daysLate" type="number" min="0" step="1" value="0">
+          <div class="hint">BOLI describes a penalty of eight times the regular rate for each day final wages go unpaid, up to 30 days. Caps and exceptions can apply.</div>
+        </details>
+
+        <button id="calculate">Calculate estimate</button>
+      </section>
+
+      <aside class="card">
+        <h2>Estimate</h2>
+        <div id="resultTotal" class="result-total">
+          <div class="label">Potential wage shortfall</div>
+          <div id="shortfall" class="value">$0.00</div>
+          <div id="resultNote" class="hint">Enter your numbers and calculate.</div>
+        </div>
+
+        <div class="breakdown" id="breakdown"></div>
+
+        <div class="pill-row" id="pills"></div>
+
+        <details open>
+          <summary>What this calculator assumes</summary>
+          <ul>
+            <li>You are non-exempt from overtime.</li>
+            <li>Overtime applies after 40 hours actually worked in a workweek.</li>
+            <li>Tips do not reduce what your employer owes in hourly wages.</li>
+            <li>Worked-through unpaid meal periods and unpaid rest breaks are work time.</li>
+            <li>Special industries and exemptions can change the answer.</li>
+          </ul>
+        </details>
+
+        <div class="callout warning-box" style="margin-top:14px;">
+          <strong>Not legal advice.</strong> This is an estimation tool from public rules. For a real claim, save schedules, paystubs, time records, text messages, and tip records; contact BOLI, a worker center, or an attorney.
+        </div>
+      </aside>
+    </main>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>Oregon rules embedded here</h2>
+      <div class="row">
+        <div>
+          <h3>Minimum wage regions</h3>
+          <ul>
+            <li><strong>Portland Metro:</strong> $16.30/hour</li>
+            <li><strong>Standard:</strong> $15.05/hour</li>
+            <li><strong>Nonurban:</strong> $14.05/hour</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Breaks and paychecks</h3>
+          <ul>
+            <li>Rest breaks are paid work time.</li>
+            <li>If you work through an unpaid meal period, that time must be paid.</li>
+            <li>If fired, final paycheck is generally due by the end of the next business day.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="source-list">
+        <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage.aspx" target="_blank" rel="noopener">Oregon BOLI — Minimum wage</a>
+        <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage-schedule.aspx" target="_blank" rel="noopener">Oregon BOLI — Minimum wage schedule</a>
+        <a href="https://www.oregon.gov/boli/employers/Pages/overtime.aspx" target="_blank" rel="noopener">Oregon BOLI — Overtime</a>
+        <a href="https://www.oregon.gov/boli/workers/Pages/meals-and-breaks.aspx" target="_blank" rel="noopener">Oregon BOLI — Meals and breaks</a>
+        <a href="https://www.oregon.gov/boli/workers/Pages/paychecks.aspx" target="_blank" rel="noopener">Oregon BOLI — Paychecks</a>
+      </div>
+    </section>
+
+    <p class="footer">Built as a static public-interest calculator. No data is submitted; calculations happen in your browser.</p>
+  </div>
+
+  <script>
+    const RATES = {
+      portland: { label: 'Portland Metro', rate: 16.30 },
+      standard: { label: 'Standard Oregon', rate: 15.05 },
+      nonurban: { label: 'Nonurban counties', rate: 14.05 }
+    };
+
+    const money = n => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number.isFinite(n) ? n : 0);
+    const num = id => {
+      const value = parseFloat(document.getElementById(id).value);
+      return Number.isFinite(value) ? value : 0;
+    };
+
+    function line(label, value) {
+      return `<div class="line"><span>${label}</span><span>${value}</span></div>`;
+    }
+
+    function calculate() {
+      const region = RATES[document.getElementById('region').value];
+      const actualHours = Math.max(0, num('actualHours'));
+      const extraMealHours = Math.max(0, num('unpaidMealMinutes')) / 60;
+      const extraRestHours = Math.max(0, num('unpaidRestMinutes')) / 60;
+      const totalHours = actualHours + extraMealHours + extraRestHours;
+      const weeks = Math.max(1, Math.floor(num('weeks') || 1));
+      const promised = Math.max(0, num('promisedRate'));
+      const regularRate = Math.max(region.rate, promised || 0);
+      const cashPaidWeekly = Math.max(0, num('cashPaid'));
+      const tipsWeekly = Math.max(0, num('tips'));
+
+      const regularHours = Math.min(totalHours, 40);
+      const overtimeHours = Math.max(0, totalHours - 40);
+      const dueWeekly = regularHours * regularRate + overtimeHours * regularRate * 1.5;
+      const dueTotal = dueWeekly * weeks;
+      const paidTotal = cashPaidWeekly * weeks;
+      const tipsTotal = tipsWeekly * weeks;
+      const shortfall = Math.max(0, dueTotal - paidTotal);
+
+      const includePenalty = document.getElementById('includePenalty').checked;
+      const daysLate = Math.min(30, Math.max(0, Math.floor(num('daysLate'))));
+      const penalty = includePenalty ? daysLate * 8 * regularRate : 0;
+      const totalExposure = shortfall + penalty;
+
+      const totalBox = document.getElementById('resultTotal');
+      totalBox.classList.toggle('clean', totalExposure <= 0.005);
+      document.getElementById('shortfall').textContent = money(totalExposure);
+      document.getElementById('resultNote').textContent = totalExposure > 0
+        ? `${money(shortfall)} wage shortfall${penalty ? ` + ${money(penalty)} possible late-pay penalty` : ''}.`
+        : 'No shortfall found from these inputs.';
+
+      document.getElementById('breakdown').innerHTML = [
+        line('Region minimum wage', `${region.label}: ${money(region.rate)}/hr`),
+        line('Rate used for calculation', `${money(regularRate)}/hr`),
+        line('Hours counted', `${totalHours.toFixed(2)} (${regularHours.toFixed(2)} regular, ${overtimeHours.toFixed(2)} overtime)`),
+        line('Wages legally due', money(dueTotal)),
+        line('Cash wages paid by employer', money(paidTotal)),
+        line('Tips received (not credited)', money(tipsTotal)),
+        line('Wage shortfall', money(shortfall)),
+        includePenalty ? line('Possible late final-pay penalty', money(penalty)) : ''
+      ].join('');
+
+      const pills = [
+        `<span class="pill"><strong>${weeks}</strong> week${weeks === 1 ? '' : 's'}</span>`,
+        `<span class="pill"><strong>${overtimeHours.toFixed(2)}</strong> overtime hrs/week</span>`,
+        `<span class="pill"><strong>${money(tipsTotal)}</strong> tips excluded from wage credit</span>`
+      ];
+      if (extraMealHours || extraRestHours) pills.push(`<span class="pill"><strong>${(extraMealHours + extraRestHours).toFixed(2)}</strong> unpaid break hrs/week added</span>`);
+      document.getElementById('pills').innerHTML = pills.join('');
+    }
+
+    document.getElementById('calculate').addEventListener('click', calculate);
+    for (const el of document.querySelectorAll('input, select')) el.addEventListener('input', calculate);
+    calculate();
+  </script>
+</body>
+</html>
