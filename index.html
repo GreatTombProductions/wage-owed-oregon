@@ -140,21 +140,31 @@
     <main class="grid">
       <section class="card">
         <h2>1. Workweek details</h2>
-        <p class="section-note">Use one workweek, then multiply by repeated weeks if the pattern happened more than once.</p>
+        <p class="section-note">One employer’s workweek, not a pay period. Repeat only identical weeks with the same hours, location, rate and pay.</p>
 
+        <label for="workweekStart">First day of the employer’s workweek</label>
+        <input id="workweekStart" type="date" aria-describedby="dateHelp">
+        <div id="dateHelp" class="hint">Supported whole workweeks: July 1, 2025–June 30, 2027, within one annual rate period. A week spanning July 1 needs separate review. If you do not know the employer’s workweek, check your records or ask BOLI rather than guessing.</div>
+        <label for="payBasis">Does this describe your pay?</label>
+        <select id="payBasis">
+          <option value="unknown">I’m not sure yet</option>
+          <option value="simple-hourly">Hourly, non-exempt, standard 40-hour overtime, one rate, no bonuses</option>
+          <option value="other">Salary, exemptions, special overtime rules, bonuses or multiple rates</option>
+        </select>
+        <div class="hint">This is a scope check, not a decision about your rights. If unsure, BOLI can explain what rules apply.</div>
         <label for="region">Where did you work?</label>
         <select id="region">
-          <option value="standard">Standard Oregon — $15.05/hour</option>
-          <option value="portland">Portland Metro urban growth boundary — $16.30/hour</option>
-          <option value="nonurban">Nonurban counties — $14.05/hour</option>
+          <option value="standard">Standard Oregon</option>
+          <option value="portland">Portland Metro urban growth boundary</option>
+          <option value="nonurban">Nonurban counties</option>
         </select>
-        <div class="hint">Rates shown are for July 1, 2025 through June 30, 2026.</div>
+        <div class="hint">The date selects the rate. <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage.aspx">Check your wage region with BOLI</a>; a Portland mailing address alone does not establish the urban growth boundary.</div>
 
         <div class="row">
           <div>
             <label for="actualHours">Hours actually worked</label>
-            <input id="actualHours" type="number" min="0" step="0.01" value="42">
-            <div class="hint">Include all time you were required to work.</div>
+            <input id="actualHours" type="number" min="0" step="0.01" placeholder="Example: 42">
+            <div class="hint">Per week, not a multi-week total. Include required work, paid rest time and payable interrupted meals; exclude vacation/sick leave. The question below prevents counting break time twice.</div>
           </div>
           <div>
             <label for="weeks">Number of weeks</label>
@@ -165,9 +175,9 @@
 
         <div class="row">
           <div>
-            <label for="unpaidMealMinutes">Worked-through meal minutes not paid</label>
+            <label for="unpaidMealMinutes">Unpaid interrupted meal-period minutes</label>
             <input id="unpaidMealMinutes" type="number" min="0" step="1" value="0">
-            <div class="hint">Example: 30 if a meal was deducted but you worked.</div>
+            <div class="hint">Per week. If duties interrupted a deducted meal, enter the WHOLE meal period, not only minutes spent on duties. For example, a 30-minute meal interrupted for 5 minutes is 30 payable minutes. Do not include fully duty-free unpaid meals.</div>
           </div>
           <div>
             <label for="unpaidRestMinutes">Unpaid rest-break minutes</label>
@@ -176,17 +186,25 @@
           </div>
         </div>
 
+        <label for="breakInclusion">Are ALL those meal and rest minutes already in your hours figure?</label>
+        <select id="breakInclusion">
+          <option value="unknown">I’m not sure / only some are included</option>
+          <option value="included">Yes — already included; do not add them</option>
+          <option value="excluded">No — none are included; add them once</option>
+        </select>
+        <div class="hint">If any break minutes are entered, resolve this before calculating. If only some are included, revise your hours figure to include all of them and choose Yes.</div>
+
         <h2 style="margin-top: 22px;">2. Pay you received</h2>
         <div class="row">
           <div>
-            <label for="cashPaid">Cash wages paid by employer</label>
-            <input id="cashPaid" type="number" min="0" step="0.01" value="600">
-            <div class="hint">Per week. Do not include tips.</div>
+            <label for="cashPaid">Gross wages paid by employer (before deductions)</label>
+            <input id="cashPaid" type="number" min="0" step="0.01" placeholder="Example: 600">
+            <div class="hint">Per week. Use gross wages on the paystub, NOT take-home pay. Exclude tips. If the paystub covers multiple weeks, use each week’s records rather than dividing uneven weeks equally.</div>
           </div>
           <div>
             <label for="tips">Tips received</label>
-            <input id="tips" type="number" min="0" step="0.01" value="150">
-            <div class="hint">Shown for context only. Not counted as wages.</div>
+            <input id="tips" type="number" min="0" step="0.01" placeholder="Enter 0 if none">
+            <div class="hint">Per week. Shown for context only; never credited against wages. Enter 0 only if no tips were received.</div>
           </div>
         </div>
 
@@ -195,25 +213,27 @@
         <div class="hint">If blank, the calculator uses the Oregon minimum wage for your region. If you were promised more, overtime is estimated from that higher regular rate.</div>
 
         <details>
-          <summary>Optional: final paycheck penalty estimate</summary>
+          <summary>Optional: illustrative final-pay penalty formula (not wages)</summary>
           <div class="toggle-row">
             <input id="includePenalty" type="checkbox">
             <label for="includePenalty" style="margin:0;color:var(--text);">Estimate possible late final paycheck penalty</label>
           </div>
           <label for="daysLate">Days final wages were late</label>
           <input id="daysLate" type="number" min="0" step="1" value="0">
-          <div class="hint">BOLI describes a penalty of eight times the regular rate for each day final wages go unpaid, up to 30 days. Caps and exceptions can apply.</div>
+          <div class="hint">Illustration only: 8 × hourly rate × days (up to 30), BEFORE eligibility, notice, caps and exceptions. BOLI describes conditions that can cap the penalty at 100% of unpaid wages. This tool does not establish the due date, willfulness, entitlement or penalty amount. The formula is NEVER added to the wage shortfall.</div>
         </details>
 
-        <button id="calculate">Calculate estimate</button>
+        <button id="calculate" type="button">Calculate estimate</button>
+        <button id="saveNotes" type="button">Download my inputs and estimate</button>
+        <div class="hint">A plain-text note, not a claim form. Save it before closing or reloading: this page does not store your entries. No account or upload.</div>
       </section>
 
       <aside class="card">
-        <h2>Estimate</h2>
-        <div id="resultTotal" class="result-total">
+        <h2>Estimate — wages only, not a claim decision</h2>
+        <div id="resultTotal" class="result-total" role="status" aria-live="polite">
           <div class="label">Potential wage shortfall</div>
-          <div id="shortfall" class="value">$0.00</div>
-          <div id="resultNote" class="hint">Enter your numbers and calculate.</div>
+          <div id="shortfall" class="value">Unavailable</div>
+          <div id="resultNote" class="hint">Enter your work dates and pay details. Calculation requires JavaScript; no estimate has been made.</div>
         </div>
 
         <div class="breakdown" id="breakdown"></div>
@@ -223,7 +243,7 @@
         <details open>
           <summary>What this calculator assumes</summary>
           <ul>
-            <li>You are non-exempt from overtime.</li>
+            <li>Hourly, non-exempt work with one rate, standard weekly overtime and no bonuses/other regular-rate adjustments. Salary, manufacturing, agriculture, hospital-specific rules and other special cases need separate review.</li>
             <li>Overtime applies after 40 hours actually worked in a workweek.</li>
             <li>Tips do not reduce what your employer owes in hourly wages.</li>
             <li>Worked-through unpaid meal periods and unpaid rest breaks are work time.</li>
@@ -238,14 +258,14 @@
     </main>
 
     <section class="card" style="margin-top:18px;">
-      <h2>Oregon rules embedded here</h2>
+      <h2>Oregon rules embedded here — checked September 30, 2026</h2>
+      <p class="section-note">No automatic rule updates. Calculations stop outside the verified periods below; a missing estimate does not mean no wages are owed.</p>
       <div class="row">
         <div>
-          <h3>Minimum wage regions</h3>
+          <h3>Minimum wage periods</h3>
           <ul>
-            <li><strong>Portland Metro:</strong> $16.30/hour</li>
-            <li><strong>Standard:</strong> $15.05/hour</li>
-            <li><strong>Nonurban:</strong> $14.05/hour</li>
+            <li><strong>July 2025–June 2026:</strong> Standard $15.05; Portland Metro $16.30; Nonurban $14.05.</li>
+            <li><strong>July 2026–June 2027:</strong> Standard $15.55; Portland Metro $16.80; Nonurban $14.55.</li>
           </ul>
         </div>
         <div>
@@ -266,81 +286,15 @@
       </div>
     </section>
 
-    <p class="footer">Built as a static public-interest calculator. No data is submitted; calculations happen in your browser.</p>
+    <section class="card" style="margin-top:18px;" id="nextStep">
+      <h2>Keep your work; choose your next step</h2>
+      <p>This calculator prepares an estimate, not a complaint. Nothing has been submitted, received, accepted or recovered. You can download your inputs even if calculation is unavailable; you can also decide not to proceed.</p>
+      <p>For questions about your records, wage region, exemption status or a possible claim, BOLI’s <a href="https://www.oregon.gov/boli/workers/Pages/wageclaim.aspx">official wage-claim page</a> lists <a href="mailto:boli_help@boli.oregon.gov">boli_help@boli.oregon.gov</a> and <a href="tel:9712453844">971-245-3844</a>, and links its Complaint Resolution Center. Check that page for current instructions before sharing records. We have not verified what its portal accepts or whether it can import this note.</p>
+      <p>Save paystubs, schedules, time records and relevant messages. <a href="https://oregonlawhelp.org/topics/work-employment/your-rights-under-wage-and-hour-laws-oregon">Oregon Law Help’s wage-and-hour guide</a> explains rights and routes to legal help. These links do not promise service availability or a successful claim. Filing or contacting your employer is your decision; this page takes neither action.</p>
+    </section>
+    <p class="footer">Static public-interest calculator. No entered data is submitted; calculations and downloads happen in your browser. Entries are not saved automatically. Not legal advice.</p>
   </div>
 
-  <script>
-    const RATES = {
-      portland: { label: 'Portland Metro', rate: 16.30 },
-      standard: { label: 'Standard Oregon', rate: 15.05 },
-      nonurban: { label: 'Nonurban counties', rate: 14.05 }
-    };
-
-    const money = n => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number.isFinite(n) ? n : 0);
-    const num = id => {
-      const value = parseFloat(document.getElementById(id).value);
-      return Number.isFinite(value) ? value : 0;
-    };
-
-    function line(label, value) {
-      return `<div class="line"><span>${label}</span><span>${value}</span></div>`;
-    }
-
-    function calculate() {
-      const region = RATES[document.getElementById('region').value];
-      const actualHours = Math.max(0, num('actualHours'));
-      const extraMealHours = Math.max(0, num('unpaidMealMinutes')) / 60;
-      const extraRestHours = Math.max(0, num('unpaidRestMinutes')) / 60;
-      const totalHours = actualHours + extraMealHours + extraRestHours;
-      const weeks = Math.max(1, Math.floor(num('weeks') || 1));
-      const promised = Math.max(0, num('promisedRate'));
-      const regularRate = Math.max(region.rate, promised || 0);
-      const cashPaidWeekly = Math.max(0, num('cashPaid'));
-      const tipsWeekly = Math.max(0, num('tips'));
-
-      const regularHours = Math.min(totalHours, 40);
-      const overtimeHours = Math.max(0, totalHours - 40);
-      const dueWeekly = regularHours * regularRate + overtimeHours * regularRate * 1.5;
-      const dueTotal = dueWeekly * weeks;
-      const paidTotal = cashPaidWeekly * weeks;
-      const tipsTotal = tipsWeekly * weeks;
-      const shortfall = Math.max(0, dueTotal - paidTotal);
-
-      const includePenalty = document.getElementById('includePenalty').checked;
-      const daysLate = Math.min(30, Math.max(0, Math.floor(num('daysLate'))));
-      const penalty = includePenalty ? daysLate * 8 * regularRate : 0;
-      const totalExposure = shortfall + penalty;
-
-      const totalBox = document.getElementById('resultTotal');
-      totalBox.classList.toggle('clean', totalExposure <= 0.005);
-      document.getElementById('shortfall').textContent = money(totalExposure);
-      document.getElementById('resultNote').textContent = totalExposure > 0
-        ? `${money(shortfall)} wage shortfall${penalty ? ` + ${money(penalty)} possible late-pay penalty` : ''}.`
-        : 'No shortfall found from these inputs.';
-
-      document.getElementById('breakdown').innerHTML = [
-        line('Region minimum wage', `${region.label}: ${money(region.rate)}/hr`),
-        line('Rate used for calculation', `${money(regularRate)}/hr`),
-        line('Hours counted', `${totalHours.toFixed(2)} (${regularHours.toFixed(2)} regular, ${overtimeHours.toFixed(2)} overtime)`),
-        line('Wages legally due', money(dueTotal)),
-        line('Cash wages paid by employer', money(paidTotal)),
-        line('Tips received (not credited)', money(tipsTotal)),
-        line('Wage shortfall', money(shortfall)),
-        includePenalty ? line('Possible late final-pay penalty', money(penalty)) : ''
-      ].join('');
-
-      const pills = [
-        `<span class="pill"><strong>${weeks}</strong> week${weeks === 1 ? '' : 's'}</span>`,
-        `<span class="pill"><strong>${overtimeHours.toFixed(2)}</strong> overtime hrs/week</span>`,
-        `<span class="pill"><strong>${money(tipsTotal)}</strong> tips excluded from wage credit</span>`
-      ];
-      if (extraMealHours || extraRestHours) pills.push(`<span class="pill"><strong>${(extraMealHours + extraRestHours).toFixed(2)}</strong> unpaid break hrs/week added</span>`);
-      document.getElementById('pills').innerHTML = pills.join('');
-    }
-
-    document.getElementById('calculate').addEventListener('click', calculate);
-    for (const el of document.querySelectorAll('input, select')) el.addEventListener('input', calculate);
-    calculate();
-  </script>
+  <script type="module" src="ui.mjs"></script>
 </body>
 </html>

@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-09-30",
+  "transport": "Public GET only; no case data or external action.",
+  "captures": [
+    {
+      "name": "minimum-wage-schedule",
+      "url": "https://www.oregon.gov/boli/workers/Pages/minimum-wage-schedule.aspx",
+      "observed_at": "2026-09-30T08:49:09.466485+00:00",
+      "sha256": "5e0a6f4644f0a443e39467552e581ff116bf969926a4354f7041b69f15cf7a78",
+      "bytes": 84859
+    },
+    {
+      "name": "meals-and-breaks",
+      "url": "https://www.oregon.gov/boli/workers/Pages/meals-and-breaks.aspx",
+      "observed_at": "2026-09-30T08:49:10.298409+00:00",
+      "sha256": "8c4946e88b8a45be8f3195e4a0fc7876ad88c8cc822a7d36020373ca41f38c55",
+      "bytes": 144619
+    },
+    {
+      "name": "paychecks",
+      "url": "https://www.oregon.gov/boli/workers/Pages/paychecks.aspx",
+      "observed_at": "2026-09-30T08:49:10.988904+00:00",
+      "sha256": "21f12bbe1a854528a5b50084c809f2dd3ba246f7cb748f02b0a3a7e443e06494",
+      "bytes": 109601
+    },
+    {
+      "name": "wageclaim",
+      "url": "https://www.oregon.gov/boli/workers/Pages/wageclaim.aspx",
+      "observed_at": "2026-09-30T08:49:11.418675+00:00",
+      "sha256": "bc85a2f3ffab3ffabce3399a55b742e84cef53f1bffee2f41f2729962d639602",
+      "bytes": 80131
+    },
+    {
+      "name": "overtime",
+      "url": "https://www.oregon.gov/boli/employers/Pages/overtime.aspx",
+      "observed_at": "2026-09-30T08:49:12.058262+00:00",
+      "sha256": "605ded1200a79147730c8852caafefd60012cbf55826cb575c02beb2f34875f5",
+      "bytes": 106147
+    }
+  ],
+  "applicability": "Minimum wage rates apply from July 1 annually; supported whole workweeks must fit one listed rate period. Retrieval date is not an effective date.",
+  "limitations": "Complaint portal requirements and acceptance of downloaded notes not verified. Final-pay formula is illustrative before eligibility, caps and exceptions."
+}
