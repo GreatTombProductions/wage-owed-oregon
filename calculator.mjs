@@ -1,6 +1,7 @@
-// Source-grounded rate periods. Last checked against BOLI: 2026-09-30.
+// Source-grounded rate periods. Last checked against BOLI's schedule: 2026-10-06.
 // Amounts are dollars/hour; end dates are inclusive. Never extrapolate a rate.
 export const RATE_PERIODS = [
+  { start: '2024-07-01', end: '2025-06-30', standard: 14.70, portland: 15.95, nonurban: 13.70 },
   { start: '2025-07-01', end: '2026-06-30', standard: 15.05, portland: 16.30, nonurban: 14.05 },
   { start: '2026-07-01', end: '2027-06-30', standard: 15.55, portland: 16.80, nonurban: 14.55 }
 ];
@@ -38,7 +39,7 @@ export function estimate(input) {
   const workweekEnd = end.toISOString().slice(0, 10);
   const period = RATE_PERIODS.find(p => input.workweekStart >= p.start && workweekEnd <= p.end);
   if (!period) {
-    return unsupported('These whole workweeks do not fit one verified rate period. Supported dates: July 1, 2025–June 30, 2027. Split workweeks at the July rate change require separate review; do not substitute a nearby date. Your inputs remain here.');
+    return unsupported('These whole workweeks do not fit one verified rate period. Supported dates: July 1, 2024–June 30, 2027. Split workweeks at the July rate change require separate review; do not substitute a nearby date. Your inputs remain here.');
   }
   if (!Object.hasOwn(REGION_LABELS, input.region)) return missing('Choose the Oregon wage region where you worked.');
   if (input.payBasis !== 'simple-hourly') {

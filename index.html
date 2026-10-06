@@ -3,298 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wage Owed Oregon — Tipped Worker Pay Calculator</title>
-  <meta name="description" content="Estimate Oregon minimum wage, overtime, unpaid break time, and final paycheck exposure. Oregon does not allow tip credits: tips cannot count against hourly pay.">
+  <title>Wage Owed Oregon — Get your hours and pay ready for an Oregon wage claim</title>
+  <meta name="description" content="Enter the days you worked as well as you remember them. Builds the day-by-day hours record Oregon BOLI asks wage claimants to upload, figures wages owed where it safely can, and lays out the online form's wage questions in order. Nothing you enter leaves your browser.">
   <style>
     :root {
-      --bg: #0b0d12;
-      --surface: #141821;
-      --surface2: #1d2330;
-      --border: #2c3546;
-      --text: #eef2f7;
-      --muted: #9aa7b8;
-      --accent: #66e3c4;
-      --accent2: #49bda1;
-      --danger: #ff6b7a;
-      --warn: #ffc857;
-      --good: #4cd37b;
-      --blue: #6aa9ff;
+      --bg: #0b0d12; --surface: #141821; --surface2: #1d2330; --border: #2c3546;
+      --text: #eef2f7; --muted: #9aa7b8; --accent: #66e3c4; --accent2: #49bda1;
+      --danger: #ff6b7a; --warn: #ffc857; --good: #4cd37b;
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top left, rgba(102, 227, 196, 0.10), transparent 32rem), var(--bg);
-      color: var(--text);
-      line-height: 1.5;
+      color: var(--text); line-height: 1.5;
     }
     .container { max-width: 1040px; margin: 0 auto; padding: 24px; }
-    header { padding: 36px 0 20px; text-align: center; }
+    header { padding: 28px 0 16px; text-align: center; }
     .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 700; }
-    h1 { margin: 8px 0 12px; font-size: clamp(2rem, 5vw, 4rem); line-height: 1.02; }
-    .subtitle { color: var(--muted); max-width: 760px; margin: 0 auto; font-size: 1.08rem; }
-    .callout {
-      margin: 24px auto 0;
-      max-width: 820px;
-      padding: 16px 18px;
-      border: 1px solid rgba(102, 227, 196, .35);
-      background: rgba(102, 227, 196, .08);
-      border-radius: 16px;
-      text-align: left;
-    }
+    h1 { margin: 8px 0 12px; font-size: clamp(1.8rem, 4.4vw, 3.2rem); line-height: 1.08; }
+    .subtitle { color: var(--muted); max-width: 780px; margin: 0 auto; font-size: 1.05rem; }
+    .callout { margin: 18px auto 0; max-width: 820px; padding: 14px 16px; border: 1px solid rgba(102, 227, 196, .35);
+      background: rgba(102, 227, 196, .08); border-radius: 16px; text-align: left; }
     .callout strong { color: var(--accent); }
-    .grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr); gap: 18px; align-items: start; }
-    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
-    .card {
-      background: rgba(20, 24, 33, .94);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.22);
+    .card { background: rgba(20, 24, 33, .94); border: 1px solid var(--border); border-radius: 18px; padding: 18px; margin-top: 16px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.22); }
+    .card h2 { margin: 0 0 8px; font-size: 1.2rem; }
+    .card h3 { margin: 16px 0 6px; font-size: 1rem; }
+    .section-note { color: var(--muted); font-size: .92rem; margin: 0 0 12px; }
+    label { display: block; font-size: .86rem; color: var(--muted); margin: 10px 0 5px; }
+    input, select, textarea {
+      width: 100%; background: var(--surface2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 10px; padding: 9px 10px; font-size: 1rem; outline: none; font-family: inherit;
     }
-    .card h2 { margin: 0 0 12px; font-size: 1.15rem; }
-    .section-note { color: var(--muted); font-size: .9rem; margin: -4px 0 14px; }
-    label { display: block; font-size: .86rem; color: var(--muted); margin: 12px 0 6px; }
-    input, select {
-      width: 100%;
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 12px;
-      font-size: 1rem;
-      outline: none;
-    }
-    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(102, 227, 196, .12); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 580px) { .row { grid-template-columns: 1fr; } }
-    .hint { color: var(--muted); font-size: .78rem; margin-top: 5px; }
-    .toggle-row { display: flex; align-items: center; gap: 10px; margin: 12px 0 4px; }
-    .toggle-row input { width: auto; }
+    input[type=checkbox] { width: auto; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(102, 227, 196, .12); }
+    .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .hint { color: var(--muted); font-size: .8rem; margin-top: 4px; }
+    .check { display: flex; gap: 8px; align-items: flex-start; margin: 6px 0; color: var(--text); font-size: .95rem; }
+    .check input { margin-top: 4px; }
     button {
-      width: 100%;
-      margin-top: 16px;
-      padding: 13px 16px;
-      border: 0;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #07100e;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
+      padding: 10px 14px; border: 0; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #07100e; font-weight: 750; font-size: .95rem; cursor: pointer;
     }
-    button:hover { filter: brightness(1.05); }
-    .result-total {
-      border: 1px solid rgba(255, 107, 122, .38);
-      background: rgba(255, 107, 122, .08);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-    .result-total .label { color: var(--muted); font-size: .86rem; }
-    .result-total .value { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 850; color: var(--danger); line-height: 1; margin: 6px 0; }
-    .result-total.clean { border-color: rgba(76,211,123,.35); background: rgba(76,211,123,.08); }
-    .result-total.clean .value { color: var(--good); }
-    .breakdown { display: grid; gap: 10px; }
-    .line {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 11px 0;
-      border-bottom: 1px solid rgba(255,255,255,.07);
-    }
-    .line:last-child { border-bottom: 0; }
-    .line span:first-child { color: var(--muted); }
-    .line span:last-child { font-weight: 750; text-align: right; }
-    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 2px; }
-    .pill { padding: 6px 9px; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: .8rem; }
-    .pill strong { color: var(--text); }
-    details {
-      margin-top: 14px;
-      background: rgba(255,255,255,.035);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      padding: 12px 14px;
-    }
-    summary { cursor: pointer; font-weight: 700; }
+    button.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); font-weight: 600; }
+    button.danger { background: transparent; color: var(--danger); border: 1px solid rgba(255,107,122,.45); font-weight: 600; }
+    button.icon { padding: 6px 10px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+    .actions input[type=number] { width: 5.5em; }
+    .entry { border: 1px solid var(--border); border-radius: 14px; padding: 10px; margin-top: 10px; background: rgba(255,255,255,.02); }
+    .entry-grid { display: grid; grid-template-columns: 1.4fr .8fr .8fr .8fr auto; gap: 8px; align-items: end; }
+    .entry-grid2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: end; }
+    .entry-grid > *, .entry-grid2 > *, .row > * { min-width: 0; }
+    .entry-grid > button { justify-self: start; }
+    @media (max-width: 720px) { .entry-grid, .entry-grid2 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 420px) { .container { padding: 12px; } .card { padding: 14px; } }
+    html, body { overflow-x: hidden; }
+    .entry label { margin: 4px 0 3px; font-size: .78rem; }
+    .entry .check { font-size: .82rem; color: var(--muted); margin: 2px 0; }
+    details { margin-top: 10px; }
+    summary { cursor: pointer; font-weight: 650; }
     ul { color: var(--muted); padding-left: 20px; }
     a { color: var(--accent); }
-    .footer { margin: 28px 0 14px; color: var(--muted); font-size: .88rem; }
-    .source-list { display: grid; gap: 8px; margin-top: 8px; }
-    .source-list a { word-break: break-word; }
-    .warning-box { border-color: rgba(255,200,87,.36); background: rgba(255,200,87,.08); }
-    .warning-box strong { color: var(--warn); }
+    .status { border-radius: 14px; padding: 12px 14px; border: 1px solid var(--border); background: var(--surface2); }
+    .status[data-status=ready] { border-color: rgba(76,211,123,.4); }
+    .status[data-status=needs-correction], .status[data-status=needs-input], .status[data-status=stopped] { border-color: rgba(255,200,87,.5); }
+    .problems li { color: var(--warn); }
+    .readback p { margin: 6px 0; }
+    .week-out { color: var(--warn); }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    .week-total td { font-weight: 700; }
+    .field { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .field .label { color: var(--muted); font-size: .9rem; }
+    .field .value { font-weight: 750; font-size: 1.05rem; }
+    .field .value.supply { color: var(--warn); font-weight: 650; }
+    .tag { font-size: .72rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px; margin-left: 6px; white-space: nowrap; }
+    blockquote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--accent2); background: rgba(255,255,255,.03); }
+    .sheet-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+    .blank { display: inline-block; min-width: 14em; border-bottom: 1px solid var(--muted); }
+    .footer { margin: 24px 0 12px; color: var(--muted); font-size: .88rem; }
+    .print-only { display: none; }
+    @media print {
+      body { background: #fff; color: #000; }
+      .container > :not(#prep) { display: none !important; }
+      #prep { border: 0; box-shadow: none; background: #fff; padding: 0; margin: 0; }
+      #prep .no-print { display: none !important; }
+      #prep .print-only { display: block; }
+      #prep, #prep * { color: #000 !important; }
+      .tag { border-color: #999; }
+      textarea { border: 0; padding: 0; resize: none; background: #fff; }
+      th, td, .field { border-color: #ccc; }
+      .sheet-part { break-inside: auto; }
+      #partA { break-after: page; }
+      a { text-decoration: none; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <div class="eyebrow">Oregon wage-hour calculator</div>
-      <h1>Tips are yours.</h1>
-      <p class="subtitle">Oregon does not allow tip credits. Your employer cannot count your tips against minimum wage. Estimate what you may be owed for minimum wage, overtime, worked-through breaks, and late final pay.</p>
-      <div class="callout">
-        <strong>Core rule:</strong> Oregon BOLI states: “Tip credits are illegal in Oregon. Your tips are yours and cannot be counted against your hourly pay.” This calculator treats tips as separate from wages paid by the employer.
-      </div>
+      <div class="eyebrow">Oregon unpaid wages</div>
+      <h1>Get your hours and pay ready for an Oregon wage claim</h1>
+      <p class="subtitle">Enter the days you worked as well as you remember them. This page builds the day-by-day hours record that Oregon’s Bureau of Labor and Industries (BOLI) asks wage claimants to upload, works out what you may be owed where it safely can, and lays out the online form’s wage questions in order. Nothing you enter leaves this browser.</p>
+      <div class="callout"><strong>Tips are yours.</strong> Oregon does not allow tip credits: tips cannot be counted against your hourly pay, so they are left out of every figure here.</div>
     </header>
 
-    <main class="grid">
-      <section class="card">
-        <h2>1. Workweek details</h2>
-        <p class="section-note">One employer’s workweek, not a pay period. Repeat only identical weeks with the same hours, location, rate and pay.</p>
+    <section class="card" id="keep">
+      <h2>Keep your work</h2>
+      <p class="section-note">BOLI’s online form has no save button, and neither does this page unless you choose one of these. Your record stays on your device.</p>
+      <div class="actions">
+        <button id="saveRecord" type="button" class="secondary">Save my record as a file</button>
+        <label class="secondary" style="margin:0;"><span class="hint">Open a saved record:</span> <input id="openRecord" type="file" accept=".json,application/json"></label>
+      </div>
+      <label class="check"><input id="keepLocal" type="checkbox"> Also keep my entries in this browser until I clear them (don’t use on a shared or public computer)</label>
+      <div class="actions"><button id="clearAll" type="button" class="danger">Clear everything from this page and this browser</button></div>
+      <p id="fileMessage" class="hint" role="status"></p>
+    </section>
 
-        <label for="workweekStart">First day of the employer’s workweek</label>
-        <input id="workweekStart" type="date" aria-describedby="dateHelp">
-        <div id="dateHelp" class="hint">Supported whole workweeks: July 1, 2025–June 30, 2027, within one annual rate period. A week spanning July 1 needs separate review. If you do not know the employer’s workweek, check your records or ask BOLI rather than guessing.</div>
-        <label for="payBasis">Does this describe your pay?</label>
-        <select id="payBasis">
-          <option value="unknown">I’m not sure yet</option>
-          <option value="simple-hourly">Hourly, non-exempt, standard 40-hour overtime, one rate, no bonuses</option>
-          <option value="other">Salary, exemptions, special overtime rules, bonuses or multiple rates</option>
-        </select>
-        <div class="hint">This is a scope check, not a decision about your rights. If unsure, BOLI can explain what rules apply.</div>
-        <label for="region">Where did you work?</label>
-        <select id="region">
-          <option value="standard">Standard Oregon</option>
-          <option value="portland">Portland Metro urban growth boundary</option>
-          <option value="nonurban">Nonurban counties</option>
-        </select>
-        <div class="hint">The date selects the rate. <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage.aspx">Check your wage region with BOLI</a>; a Portland mailing address alone does not establish the urban growth boundary.</div>
-
-        <div class="row">
-          <div>
-            <label for="actualHours">Hours actually worked</label>
-            <input id="actualHours" type="number" min="0" step="0.01" placeholder="Example: 42">
-            <div class="hint">Per week, not a multi-week total. Include required work, paid rest time and payable interrupted meals; exclude vacation/sick leave. The question below prevents counting break time twice.</div>
-          </div>
-          <div>
-            <label for="weeks">Number of weeks</label>
-            <input id="weeks" type="number" min="1" step="1" value="1">
-            <div class="hint">Repeated weekly pattern.</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="unpaidMealMinutes">Unpaid interrupted meal-period minutes</label>
-            <input id="unpaidMealMinutes" type="number" min="0" step="1" value="0">
-            <div class="hint">Per week. If duties interrupted a deducted meal, enter the WHOLE meal period, not only minutes spent on duties. For example, a 30-minute meal interrupted for 5 minutes is 30 payable minutes. Do not include fully duty-free unpaid meals.</div>
-          </div>
-          <div>
-            <label for="unpaidRestMinutes">Unpaid rest-break minutes</label>
-            <input id="unpaidRestMinutes" type="number" min="0" step="1" value="0">
-            <div class="hint">Oregon rest breaks are paid work time.</div>
-          </div>
-        </div>
-
-        <label for="breakInclusion">Are ALL those meal and rest minutes already in your hours figure?</label>
-        <select id="breakInclusion">
-          <option value="unknown">I’m not sure / only some are included</option>
-          <option value="included">Yes — already included; do not add them</option>
-          <option value="excluded">No — none are included; add them once</option>
-        </select>
-        <div class="hint">If any break minutes are entered, resolve this before calculating. If only some are included, revise your hours figure to include all of them and choose Yes.</div>
-
-        <h2 style="margin-top: 22px;">2. Pay you received</h2>
-        <div class="row">
-          <div>
-            <label for="cashPaid">Gross wages paid by employer (before deductions)</label>
-            <input id="cashPaid" type="number" min="0" step="0.01" placeholder="Example: 600">
-            <div class="hint">Per week. Use gross wages on the paystub, NOT take-home pay. Exclude tips. If the paystub covers multiple weeks, use each week’s records rather than dividing uneven weeks equally.</div>
-          </div>
-          <div>
-            <label for="tips">Tips received</label>
-            <input id="tips" type="number" min="0" step="0.01" placeholder="Enter 0 if none">
-            <div class="hint">Per week. Shown for context only; never credited against wages. Enter 0 only if no tips were received.</div>
-          </div>
-        </div>
-
-        <label for="promisedRate">Promised regular hourly rate, if above minimum wage</label>
-        <input id="promisedRate" type="number" min="0" step="0.01" placeholder="Optional">
-        <div class="hint">If blank, the calculator uses the Oregon minimum wage for your region. If you were promised more, overtime is estimated from that higher regular rate.</div>
-
-        <details>
-          <summary>Optional: illustrative final-pay penalty formula (not wages)</summary>
-          <div class="toggle-row">
-            <input id="includePenalty" type="checkbox">
-            <label for="includePenalty" style="margin:0;color:var(--text);">Estimate possible late final paycheck penalty</label>
-          </div>
-          <label for="daysLate">Days final wages were late</label>
-          <input id="daysLate" type="number" min="0" step="1" value="0">
-          <div class="hint">Illustration only: 8 × hourly rate × days (up to 30), BEFORE eligibility, notice, caps and exceptions. BOLI describes conditions that can cap the penalty at 100% of unpaid wages. This tool does not establish the due date, willfulness, entitlement or penalty amount. The formula is NEVER added to the wage shortfall.</div>
-        </details>
-
-        <button id="calculate" type="button">Calculate estimate</button>
-        <button id="saveNotes" type="button">Download my inputs and estimate</button>
-        <div class="hint">A plain-text note, not a claim form. Save it before closing or reloading: this page does not store your entries. No account or upload.</div>
-      </section>
-
-      <aside class="card">
-        <h2>Estimate — wages only, not a claim decision</h2>
-        <div id="resultTotal" class="result-total" role="status" aria-live="polite">
-          <div class="label">Potential wage shortfall</div>
-          <div id="shortfall" class="value">Unavailable</div>
-          <div id="resultNote" class="hint">Enter your work dates and pay details. Calculation requires JavaScript; no estimate has been made.</div>
-        </div>
-
-        <div class="breakdown" id="breakdown"></div>
-
-        <div class="pill-row" id="pills"></div>
-
-        <details open>
-          <summary>What this calculator assumes</summary>
-          <ul>
-            <li>Hourly, non-exempt work with one rate, standard weekly overtime and no bonuses/other regular-rate adjustments. Salary, manufacturing, agriculture, hospital-specific rules and other special cases need separate review.</li>
-            <li>Overtime applies after 40 hours actually worked in a workweek.</li>
-            <li>Tips do not reduce what your employer owes in hourly wages.</li>
-            <li>Worked-through unpaid meal periods and unpaid rest breaks are work time.</li>
-            <li>Special industries and exemptions can change the answer.</li>
-          </ul>
-        </details>
-
-        <div class="callout warning-box" style="margin-top:14px;">
-          <strong>Not legal advice.</strong> This is an estimation tool from public rules. For a real claim, save schedules, paystubs, time records, text messages, and tip records; contact BOLI, a worker center, or an attorney.
-        </div>
-      </aside>
-    </main>
-
-    <section class="card" style="margin-top:18px;">
-      <h2>Oregon rules embedded here — checked September 30, 2026</h2>
-      <p class="section-note">No automatic rule updates. Calculations stop outside the verified periods below; a missing estimate does not mean no wages are owed.</p>
+    <section class="card">
+      <h2>1. About the job</h2>
+      <label for="payBasis">How were you paid?</label>
+      <select id="payBasis" data-path="payBasis"></select>
+      <div class="hint">This decides which rules can be used. Being unsure doesn’t mean you have no claim.</div>
+      <label>Do any of these apply?</label>
+      <div id="situations"></div>
       <div class="row">
         <div>
-          <h3>Minimum wage periods</h3>
-          <ul>
-            <li><strong>July 2025–June 2026:</strong> Standard $15.05; Portland Metro $16.30; Nonurban $14.05.</li>
-            <li><strong>July 2026–June 2027:</strong> Standard $15.55; Portland Metro $16.80; Nonurban $14.55.</li>
-          </ul>
+          <label for="region">Where did you work?</label>
+          <select id="region" data-path="region">
+            <option value="">Choose…</option>
+            <option value="standard">Standard Oregon</option>
+            <option value="portland">Portland Metro (inside the urban growth boundary)</option>
+            <option value="nonurban">Nonurban counties</option>
+          </select>
+          <div class="hint"><a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage.aspx">Check your wage region with BOLI</a>. A Portland mailing address alone doesn’t settle it.</div>
         </div>
         <div>
-          <h3>Breaks and paychecks</h3>
-          <ul>
-            <li>Rest breaks are paid work time.</li>
-            <li>If you work through an unpaid meal period, that time must be paid.</li>
-            <li>If fired, final paycheck is generally due by the end of the next business day.</li>
-          </ul>
+          <label for="workweekStartDay">What day does your employer’s workweek start?</label>
+          <select id="workweekStartDay" data-path="workweekStartDay">
+            <option value="unknown">I don’t know</option>
+            <option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option>
+            <option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option>
+          </select>
+          <div class="hint">Overtime is counted per workweek, which is not always the pay period. A paystub or handbook often shows it. If you don’t know, figures still work as long as no 7-day stretch goes over 40 hours.</div>
+        </div>
+        <div>
+          <label for="hireDate">Hire date</label>
+          <input id="hireDate" type="date" data-path="hireDate">
+          <label class="check"><input type="checkbox" data-path="hireDateApprox"> approximate</label>
+          <div class="hint">BOLI’s form won’t take a wage date earlier than this.</div>
         </div>
       </div>
-      <div class="source-list">
-        <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage.aspx" target="_blank" rel="noopener">Oregon BOLI — Minimum wage</a>
-        <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage-schedule.aspx" target="_blank" rel="noopener">Oregon BOLI — Minimum wage schedule</a>
-        <a href="https://www.oregon.gov/boli/employers/Pages/overtime.aspx" target="_blank" rel="noopener">Oregon BOLI — Overtime</a>
-        <a href="https://www.oregon.gov/boli/workers/Pages/meals-and-breaks.aspx" target="_blank" rel="noopener">Oregon BOLI — Meals and breaks</a>
-        <a href="https://www.oregon.gov/boli/workers/Pages/paychecks.aspx" target="_blank" rel="noopener">Oregon BOLI — Paychecks</a>
+      <h3>Hourly rate you were promised</h3>
+      <p class="section-note">Leave empty to use Oregon’s minimum wage. If your rate changed, add the new rate with the date it started.</p>
+      <div id="rates"></div>
+      <div class="actions"><button id="addRate" type="button" class="secondary">Add a rate</button></div>
+    </section>
+
+    <section class="card">
+      <h2>2. Days you worked</h2>
+      <p class="section-note">One row per day (or per shift, for split shifts). Use hours, or start and end times. Tick “approx.” for anything you’re estimating, and leave hours empty if you don’t know them: nothing is filled in for you.</p>
+      <details id="pasteBox">
+        <summary>Paste lines from a timekeeping app or your notes</summary>
+        <p class="hint">One day per line: a date and hours (<code>2026-06-01 8</code> or <code>6/1/2026, 7.5</code>) or times (<code>6/2/2026 9am-5:30pm</code>). Add <code>~</code> to mark a line approximate. Lines that can’t be read are shown back, not dropped.</p>
+        <textarea id="pasteText" rows="5" aria-label="Lines to paste"></textarea>
+        <div class="actions"><button id="pasteApply" type="button" class="secondary">Add these lines</button></div>
+      </details>
+      <div id="unparsed"></div>
+      <div id="days"></div>
+      <div class="actions">
+        <button id="addDay" type="button" class="secondary">Add a day</button>
+        <button id="addWeek" type="button" class="secondary">Add the next 7 days</button>
+        <span class="hint">Same as last week,</span>
+        <input id="repeatN" type="number" min="1" max="104" step="1" value="1" aria-label="How many more weeks">
+        <button id="repeatWeek" type="button" class="secondary">more times</button>
+      </div>
+      <label for="breakInclusion">If you entered meal or rest minutes: are they already counted in the hours or times above?</label>
+      <select id="breakInclusion" data-path="breakInclusion">
+        <option value="unknown">I’m not sure / some are</option>
+        <option value="included">Yes, already counted; don’t add them</option>
+        <option value="excluded">No, not counted; add them once</option>
+      </select>
+      <div class="hint">If only some are counted, change the hours so they include all of them, then choose Yes. A meal you worked through or were interrupted in counts in full: 30 minutes interrupted for 5 is 30 minutes. Oregon rest breaks are paid time.</div>
+    </section>
+
+    <section class="card">
+      <h2>3. What you were paid</h2>
+      <p class="section-note">Add each paycheck: the first and last day it covered (from the paystub) and the gross amount before deductions, not take-home pay and not tips. If you weren’t paid for some days, add them with 0.</p>
+      <div id="pay"></div>
+      <div class="actions">
+        <button id="addPay" type="button" class="secondary">Add a paycheck</button>
+        <span class="hint">Same as the last paycheck,</span>
+        <input id="repeatPayN" type="number" min="1" max="104" step="1" value="1" aria-label="How many more paychecks">
+        <button id="repeatPay" type="button" class="secondary">more times</button>
       </div>
     </section>
 
-    <section class="card" style="margin-top:18px;" id="nextStep">
-      <h2>Keep your work; choose your next step</h2>
-      <p>This calculator prepares an estimate, not a complaint. Nothing has been submitted, received, accepted or recovered. You can download your inputs even if calculation is unavailable; you can also decide not to proceed.</p>
-      <p>For questions about your records, wage region, exemption status or a possible claim, BOLI’s <a href="https://www.oregon.gov/boli/workers/Pages/wageclaim.aspx">official wage-claim page</a> lists <a href="mailto:boli_help@boli.oregon.gov">boli_help@boli.oregon.gov</a> and <a href="tel:9712453844">971-245-3844</a>, and links its Complaint Resolution Center. Check that page for current instructions before sharing records. We have not verified what its portal accepts or whether it can import this note.</p>
-      <p>Save paystubs, schedules, time records and relevant messages. <a href="https://oregonlawhelp.org/topics/work-employment/your-rights-under-wage-and-hour-laws-oregon">Oregon Law Help’s wage-and-hour guide</a> explains rights and routes to legal help. These links do not promise service availability or a successful claim. Filing or contacting your employer is your decision; this page takes neither action.</p>
+    <section class="card">
+      <h2>4. Read it back</h2>
+      <div id="status" class="status" role="status" aria-live="polite">Add the days you worked.</div>
+      <div id="problems"></div>
+      <div id="readback" class="readback"></div>
     </section>
-    <p class="footer">Static public-interest calculator. No entered data is submitted; calculations and downloads happen in your browser. Entries are not saved automatically. Not legal advice.</p>
-  </div>
 
+    <section class="card" id="prep">
+      <div class="sheet-head">
+        <h2>5. Your preparation sheet</h2>
+        <div class="actions no-print">
+          <button id="printSheet" type="button">Print or save as PDF</button>
+          <button id="downloadText" type="button" class="secondary">Download as plain text</button>
+        </div>
+      </div>
+      <p class="section-note">This is not a claim. Nothing has been filed, received, accepted or recovered. It prepares what BOLI’s online form asks for, so you can finish that form in one sitting. Upload file types BOLI accepts were not checked; print to PDF and plain text are both offered.</p>
+
+      <div id="partA" class="sheet-part">
+        <h3>A. Daily hours record</h3>
+        <p class="hint">You can upload this to BOLI as <strong>Personal Time Records</strong>, or mail it. BOLI asks for “an explanation or calendar detailing the hours worked each day of your claim.” <span class="tag">seen on form</span></p>
+        <p>Worker: <span class="blank"></span> &nbsp; Employer: <span class="blank"></span></p>
+        <p class="hint">Made from my own memory and records. ~ marks an approximate entry. <span id="weekBasis"></span></p>
+        <div id="recordA"></div>
+      </div>
+
+      <div class="sheet-part">
+        <h3>B. BOLI’s online form, Wage Claim section, in the form’s order</h3>
+        <p class="hint">Tags say how each item was observed on BOLI’s public form (2026-10-06): <em>seen on form</em>, or <em>rule from form code</em> (read from the page’s code, not seen on screen).</p>
+        <p id="sheetStatus"></p>
+        <div id="sheetB"></div>
+        <div id="excluded"></div>
+        <div class="field">
+          <label for="issueDraft" class="label">Describe the Issue: your draft (300 characters at most) <span class="tag">limit seen on form</span></label>
+          <textarea id="issueDraft" rows="4" maxlength="300"></textarea>
+          <div class="actions no-print"><span id="issueCount" class="hint">0/300</span><button id="resetDraft" type="button" class="secondary">Use the suggested draft again</button></div>
+          <div class="hint">Edit it into your own words. BOLI’s example: “I worked 8 hours on 11/1/2023 and 8 hours on 11/2/2023. I have been paid $100 for this week, and I am owed $240 in additional wages.” The reason your employer gave is yours to write.</div>
+        </div>
+        <div class="field">
+          <div class="label">When were the wages due?</div>
+          <p id="dueHelp" class="hint"></p>
+        </div>
+      </div>
+
+      <div class="sheet-part">
+        <h3>C. Have ready for one sitting</h3>
+        <div id="haveReady"></div>
+      </div>
+
+      <div class="sheet-part">
+        <h3>D. Before you sign: BOLI’s wording, shown ahead of time</h3>
+        <div id="beforeSign"></div>
+      </div>
+
+      <div class="sheet-part">
+        <h3>E. Where this page stops, and where to get help</h3>
+        <div id="stops"></div>
+        <h3>Limits</h3>
+        <ul id="limits"></ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Oregon rules used here</h2>
+      <p class="section-note">Minimum wage periods checked against BOLI’s schedule on October 6, 2026; other rules September 30, 2026. No automatic updates. Weeks outside these periods are listed, not guessed.</p>
+      <ul id="ratesList"></ul>
+      <ul>
+        <li>Overtime: 1.5 times the regular rate after 40 hours worked in a workweek (standard rule; some industries differ).</li>
+        <li>Rest breaks are paid work time. A meal you worked through or were interrupted in must be paid in full.</li>
+        <li>Tips never count against hourly wages.</li>
+      </ul>
+      <p class="hint">
+        <a href="https://www.oregon.gov/boli/workers/Pages/minimum-wage-schedule.aspx">Minimum wage schedule</a> ·
+        <a href="https://www.oregon.gov/boli/employers/Pages/overtime.aspx">Overtime</a> ·
+        <a href="https://www.oregon.gov/boli/workers/Pages/meals-and-breaks.aspx">Meals and breaks</a> ·
+        <a href="https://www.oregon.gov/boli/workers/Pages/paychecks.aspx">Paychecks</a> ·
+        <a href="https://www.oregon.gov/boli/workers/Pages/wageclaim.aspx">Wage claims</a> ·
+        <a href="sources.json">Source receipts</a>
+      </p>
+    </section>
+    <p class="footer">A free, static page. Calculations, printing and saving happen in your browser; nothing you type is sent anywhere. Not legal advice. You decide whether to file, contact anyone, or do nothing.</p>
+  </div>
   <script type="module" src="ui.mjs"></script>
 </body>
 </html>

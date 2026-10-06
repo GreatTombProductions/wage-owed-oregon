@@ -1,13 +1,14 @@
 {
-  "checked_at": "2026-09-30",
-  "transport": "Public GET only; no case data or external action.",
+  "checked_at": "2026-10-06",
+  "transport": "Public GET only, logged out. No account, draft, upload, submission or contact with BOLI; no case data.",
   "captures": [
     {
       "name": "minimum-wage-schedule",
       "url": "https://www.oregon.gov/boli/workers/Pages/minimum-wage-schedule.aspx",
-      "observed_at": "2026-09-30T08:49:09.466485+00:00",
-      "sha256": "5e0a6f4644f0a443e39467552e581ff116bf969926a4354f7041b69f15cf7a78",
-      "bytes": 84859
+      "observed_at": "2026-10-06T16:42:42Z",
+      "sha256": "c3a2f8703142dab129262db50bf124a36a601b141e44b5b69ef9dcec12070380",
+      "bytes": 84859,
+      "note": "Rates for July 2024, July 2025 and July 2026 periods unchanged from the 2026-09-30 capture; page hash differs only in page furniture."
     },
     {
       "name": "meals-and-breaks",
@@ -36,8 +37,32 @@
       "observed_at": "2026-09-30T08:49:12.058262+00:00",
       "sha256": "605ded1200a79147730c8852caafefd60012cbf55826cb575c02beb2f34875f5",
       "bytes": 106147
+    },
+    {
+      "name": "complaint-portal-landing",
+      "url": "https://complaints.boli.oregon.gov/home/landing",
+      "observed_at": "2026-10-06T02:26:54+00:00",
+      "sha256": "cf87d4d6354516c1ec35d1f91c12f152f98ba82583e3c60924b386305528c0a2",
+      "bytes": 85111,
+      "use": "What-to-have-ready text and the daily hours calendar request (rendered in a logged-out browser)."
+    },
+    {
+      "name": "complaint-portal-application-code",
+      "url": "https://complaints.boli.oregon.gov/main.e7931771594a496e.js",
+      "observed_at": "2026-10-06T02:28:49+00:00",
+      "sha256": "fdb543c6b267d45fbf24db58c595a67ae8855794b5c48537ccca74b3b0c9f84e",
+      "bytes": 2560496,
+      "use": "Wage Claim field order, field rules ($50 minimum, 300-character limits, date ordering) and the assignment and signature wording, read from public page code."
+    },
+    {
+      "name": "contact-us",
+      "url": "https://www.oregon.gov/boli/about/pages/contact-us.aspx",
+      "observed_at": "2026-10-06T02:38:11+00:00",
+      "sha256": "eb8e83cccb9382693c3a431ab5398fffbd3f11f07ef52c2a301838ed164b07fe",
+      "bytes": 81888,
+      "use": "Attorney List links."
     }
   ],
-  "applicability": "Minimum wage rates apply from July 1 annually; supported whole workweeks must fit one listed rate period. Retrieval date is not an effective date.",
-  "limitations": "Complaint portal requirements and acceptance of downloaded notes not verified. Final-pay formula is illustrative before eligibility, caps and exceptions."
+  "applicability": "Minimum wage rates apply from July 1 annually; a workweek must fall entirely within one listed rate period to be figured. Retrieval date is not an effective date.",
+  "limitations": "Complaint portal server-side behavior (accepted upload types and sizes, confirmation email, how intake weighs entries) not verified. Field order and wording reflect one day's observation and can change."
 }
