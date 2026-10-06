@@ -122,6 +122,7 @@ export function rowHours(day) {
       if (off !== null && (!Number.isFinite(off) || off < 0)) problems.push('duty-free meal minutes must be 0 or more');
       else if (off !== null && off >= span) problems.push('the duty-free meal is as long as the whole shift');
       else fromTimes = (span - (off ?? 0)) / 60;
+      if (fromTimes !== null && fromTimes > 16) notes.push(`these times come to ${fmtNum(fromTimes)} hours in one shift; if am and pm are swapped, fix the times`);
     }
   }
   let hours = null;
@@ -191,6 +192,7 @@ export function parseLine(line) {
     }
     day.start = start; day.end = end;
     rest = (rest.slice(0, t.index) + ' ' + rest.slice(t.index + t[0].length)).trim();
+    if (TIME_RANGE.test(rest)) return { reason: 'a second time range on this line: put each shift on its own line with the same date; a meal break goes in that day’s breaks' };
   } else {
     const h = /(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hours?)?\b/i.exec(rest);
     if (!h) return { reason: 'no hours or start–end times found' };
@@ -365,7 +367,7 @@ export function evaluate(account, today) {
         w.status = 'out';
         const first = RATE_PERIODS[0].start, last = RATE_PERIODS.at(-1).end;
         w.reason = w.start < first || w.end > last
-          ? `This workweek is outside the minimum-wage periods this page has verified (${usDate(first)} to ${usDate(last)}). It is listed, not guessed.`
+          ? `This workweek is not entirely within the minimum-wage periods this page has verified (${usDate(first)} to ${usDate(last)}). It is listed, not guessed.`
           : 'This workweek crosses the July 1 minimum-wage change. Weeks that span two rates need review this page doesn’t do.';
       } else {
         w.status = 'missing';
@@ -414,6 +416,8 @@ export function evaluate(account, today) {
       g.computable = true;
       g.due = g.weeks.reduce((s, w) => s + w.est.dueTotal, 0);
       g.regularDue = g.weeks.reduce((s, w) => s + w.est.regularHours * w.est.regularRate, 0);
+      // Straight time for every hour: pay below this means regular wages are short, not only the overtime premium.
+      g.straightDue = g.weeks.reduce((s, w) => s + (w.est.regularHours + w.est.overtimeHours) * w.est.regularRate, 0);
       g.overtimeHours = g.weeks.reduce((s, w) => s + w.est.overtimeHours, 0);
       g.hours = g.weeks.reduce((s, w) => s + w.est.totalHours, 0);
       g.shortfall = money2(Math.max(0, g.due - g.paid));
@@ -447,7 +451,7 @@ export function evaluate(account, today) {
     t.firstOwed = owedGroups.map(g => g.firstDate).sort()[0];
     t.lastOwed = owedGroups.map(g => g.lastDate).sort().at(-1);
     t.withinTwoYears = t.firstOwed >= twoYearsBefore(today);
-    t.regular = owedGroups.some(g => g.paid < g.regularDue - 0.005);
+    t.regular = owedGroups.some(g => g.paid < g.straightDue - 0.005);
     t.overtime = owedGroups.some(g => g.overtimeHours > 0);
     t.overtimeRates = [...new Set(owedGroups.flatMap(g => g.weeks).filter(w => w.est.overtimeHours > 0).map(w => money2(w.est.regularRate * 1.5)))];
   }
@@ -517,22 +521,29 @@ export function fieldSheet(result) {
     evidence: 'seen on form'
   });
   if (owed && t.overtime) {
-    items.push({ label: 'What was the overtime rate of pay?', value: t.overtimeRates.map(r => `${money(r)}/hour`).join(' or '), help: '1.5 times the regular rate used for those weeks.', evidence: 'seen on form' });
+    items.push({ label: 'What was the overtime rate of pay?', value: t.overtimeRates.map(r => `${money(r)}/hour`).join(' or '), help: '1.5 times the regular rate used for those weeks.' + (t.overtimeRates.length > 1 ? ' The form takes one amount; which one to enter is your choice.' : ''), evidence: 'seen on form' });
   }
   items.push({
     label: 'Areas that may apply: wages claimed for work in the last two years',
-    value: owed ? (t.withinTwoYears ? `Yes: every day in the figure is on or after ${usDate(twoYearsBefore(result.today))} (a date fact, not a legal finding).` : `Not all: some days in the figure are before ${usDate(twoYearsBefore(result.today))} (a date fact, not a legal finding).`) : null,
+    value: owed ? (t.withinTwoYears ? `Yes: every day in the figure is on or after ${usDate(twoYearsBefore(result.today))} (a date fact, not a legal finding).`
+      : t.lastOwed < twoYearsBefore(result.today) ? `No: every day in the figure is before ${usDate(twoYearsBefore(result.today))} (a date fact, not a legal finding).`
+      : `Not all: some days in the figure are before ${usDate(twoYearsBefore(result.today))} (a date fact, not a legal finding).`) : null,
     help: 'The form also asks about being under 18 and construction work; this page doesn’t cover those.',
     evidence: 'seen on form'
   });
-  items.push({ label: 'First date owed wages', value: owed ? usDate(t.firstOwed) : null, help: 'Must be on or after your hire date and on or before the last date.', evidence: 'rule from form code' });
-  items.push({ label: 'Last date owed wages', value: owed ? usDate(t.lastOwed) : null, help: 'The form’s date picker appears to stop at today.', evidence: 'rule from form code' });
+  const recorded = result.days.map(d => d.date).sort();
+  const partialDates = owed && t.partial && recorded.length && (recorded[0] < t.firstOwed || recorded.at(-1) > t.lastOwed)
+    ? ` These dates cover only the figured weeks. Your record runs ${usDate(recorded[0])} to ${usDate(recorded.at(-1))}; if you also claim the weeks listed below, the dates and the total change. BOLI’s help line can help.`
+    : '';
+  items.push({ label: 'First date owed wages', value: owed ? usDate(t.firstOwed) : null, help: 'Must be on or after your hire date and on or before the last date.' + partialDates, evidence: 'rule from form code' });
+  items.push({ label: 'Last date owed wages', value: owed ? usDate(t.lastOwed) : null, help: 'The form’s date picker appears to stop at today.' + partialDates, evidence: 'rule from form code' });
   items.push({ label: 'When were the wages due?', value: null, help: 'You choose this date; it must be on or after the last date owed. See “When were the wages due?” below.', evidence: 'rule from form code' });
   const r = a => a.map(x => `${money(x)}/hour`).join(' or ');
   items.push({
     label: 'What was your rate of pay?',
     value: ready && t.promisedGiven ? r(t.ratesUsed) : null,
-    help: ready && !t.promisedGiven ? 'You didn’t enter a promised rate, so minimum wage was used for the figures. Enter the rate you were actually paid or promised.' : 'Pay rate type: hour.',
+    help: ready && !t.promisedGiven ? 'You didn’t enter a promised rate, so minimum wage was used for the figures. Enter the rate you were actually paid or promised.'
+      : 'Pay rate type: hour.' + (ready && t.ratesUsed.length > 1 ? ' The form takes one amount; which one to enter is your choice, and you can mention the change in Describe the Issue.' : ''),
     evidence: 'seen on form'
   });
   let totalValue = null, totalHelp = '';

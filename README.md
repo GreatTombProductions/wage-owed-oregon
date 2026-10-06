@@ -8,7 +8,7 @@ Oregon does not allow tip credits: tips cannot be counted against hourly pay, so
 
 ## What you enter
 
-- **Days worked**: hours, or start and end times (overnight shifts count on the start date). Rows can be marked approximate, and hours you don't know can stay empty. A split shift is two rows on the same date. You can paste lines from a timekeeping app or notes (`2026-06-01 8`, `6/2/2026 9am-5:30pm`). Lines that can't be read are shown back, not dropped. "Same as last week" repeats a week.
+- **Days worked**: hours, or start and end times (overnight shifts count on the start date). Rows can be marked approximate, and hours you don't know can stay empty. A split shift is two rows on the same date. You can paste lines from a timekeeping app or notes (`2026-06-01 8`, `6/2/2026 9am-5:30pm`). Lines that can't be read are shown back, not dropped, including a line holding two shifts (paste each shift on its own line). A shift over 16 hours from times gets an am/pm check. "Same as last week" repeats a week.
 - **Paychecks**: the first and last day each one covered, and the gross amount before deductions (0 if you weren't paid).
 - **About the job**: how you were paid, wage region, the day your employer's workweek starts (optional unless some 7-day stretch goes over 40 hours), hire date, and any promised hourly rates with the dates they started.
 
