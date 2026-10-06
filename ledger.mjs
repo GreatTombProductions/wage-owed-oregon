@@ -158,6 +158,10 @@ function clock(h, m, suffix) {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
+const WEEKDAY_NAMES = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+// A weekday word at the start of what's left once the date is taken out ("Wed 9/3/2025 …").
+const WEEKDAY_WORD = /^(sun(?:day)?|mon(?:day)?|tue(?:s|sday)?|wed(?:s|nesday)?|thu(?:r|rs|rsday)?|fri(?:day)?|sat(?:urday)?)\b\.?,?/i;
+
 // One pasted line -> a day row, or a reason it couldn't be read. The line
 // itself is always kept by the caller.
 export function parseLine(line) {
@@ -173,6 +177,12 @@ export function parseLine(line) {
   if (!date) return { reason: 'no date found (use 2026-06-01 or 6/1/2026)' };
   if (!isRealDate(date)) return { reason: `${m[0]} is not a real calendar date` };
   rest = (rest.slice(0, m.index) + ' ' + rest.slice(m.index + m[0].length)).trim();
+  const wd = WEEKDAY_WORD.exec(rest);
+  if (wd) {
+    const named = WEEKDAY_NAMES.findIndex(n => n.startsWith(wd[1].toLowerCase().slice(0, 3)));
+    if (named !== weekday(date)) return { reason: `${wd[1]} doesn’t match ${m[0]}, which is a ${WEEKDAY_NAMES[weekday(date)][0].toUpperCase()}${WEEKDAY_NAMES[weekday(date)].slice(1)}; check the date` };
+    rest = rest.slice(wd[0].length).trim();
+  }
   const day = emptyDay(date);
   day.approxDate = approx;
   day.approxHours = approx;
@@ -187,7 +197,8 @@ export function parseLine(line) {
       const carried = clock(t[1], t[2], t[6]);
       if (carried && minutesOf(carried) < minutesOf(end)) start = carried;
     }
-    if (!t[3] && Number(t[1]) <= 12 && minutesOf(end) <= minutesOf(start)) {
+    const twelveHourPair = !t[3] && !t[6] && Number(t[1]) <= 12 && Number(t[4]) <= 12 && !/^0/.test(t[1]);
+    if (twelveHourPair || (!t[3] && Number(t[1]) <= 12 && minutesOf(end) <= minutesOf(start))) {
       return { reason: 'unclear times: add am/pm to both times or use 24-hour times (for example 10pm-6am or 22:00-06:00)' };
     }
     day.start = start; day.end = end;
@@ -352,7 +363,9 @@ export function evaluate(account, today) {
       w.reason = `Hours not given for ${unknown.map(d => usDate(d.date)).join(', ')}. Add them, or leave them unknown and this week stays out of the total.`;
     } else if (rates.length > 1) {
       w.status = 'out';
-      w.reason = 'Your promised rate changed during this workweek. Overtime with two rates in one week needs review this page doesn’t do.';
+      w.reason = w.hours > 40
+        ? 'Your promised rate changed during this workweek. Overtime with two rates in one week needs review this page doesn’t do.'
+        : 'Your promised rate changed during this workweek. This page figures one rate per workweek, so this week is listed, not guessed.';
     } else {
       w.promised = rates[0] ?? null;
       w.est = estimate({
@@ -580,6 +593,7 @@ export function preparationText(result, content, draft) {
   L.push(`Prepared ${result.today}. Facts are the worker’s own account. ~ marks an approximate entry.`);
   L.push('', 'A. DAILY HOURS RECORD (can be uploaded to BOLI as “Personal Time Records”, or mailed)');
   L.push('Worker: ____________________   Employer: ____________________');
+  L.push('(Write both names in before you mail or upload this. This page never asks for them.)');
   L.push(workweekLabel(result));
   for (const w of dailyRecord(result)) {
     L.push('', `Week ${w.label}`);

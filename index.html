@@ -166,7 +166,7 @@
       <p class="section-note">One row per day (or per shift, for split shifts). Use hours, or start and end times. Tick “approx.” for anything you’re estimating, and leave hours empty if you don’t know them: nothing is filled in for you.</p>
       <details id="pasteBox">
         <summary>Paste lines from a timekeeping app or your notes</summary>
-        <p class="hint">One day per line: a date and hours (<code>2026-06-01 8</code> or <code>6/1/2026, 7.5</code>) or times (<code>6/2/2026 9am-5:30pm</code>). Add <code>~</code> to mark a line approximate. Lines that can’t be read are shown back, not dropped.</p>
+        <p class="hint">One day per line: a date and hours (<code>2026-06-01 8</code> or <code>6/1/2026, 7.5</code>) or times with am/pm or in 24-hour form (<code>6/2/2026 9am-5:30pm</code> or <code>6/2/2026 18:00-22:00</code>). Add <code>~</code> to mark a line approximate. Lines that can’t be read are shown back, not dropped.</p>
         <textarea id="pasteText" rows="5" aria-label="Lines to paste"></textarea>
         <div class="actions"><button id="pasteApply" type="button" class="secondary">Add these lines</button></div>
       </details>
@@ -221,6 +221,7 @@
         <h3>A. Daily hours record</h3>
         <p class="hint">You can upload this to BOLI as <strong>Personal Time Records</strong>, or mail it. BOLI asks for “an explanation or calendar detailing the hours worked each day of your claim.” <span class="tag">seen on form</span></p>
         <p>Worker: <span class="blank"></span> &nbsp; Employer: <span class="blank"></span></p>
+        <p class="hint">Write your name and your employer’s name on these lines before you mail or upload this. This page never asks for names, so it leaves them blank.</p>
         <p class="hint">Made from my own memory and records. ~ marks an approximate entry. <span id="weekBasis"></span></p>
         <div id="recordA"></div>
       </div>

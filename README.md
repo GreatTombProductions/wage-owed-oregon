@@ -8,7 +8,7 @@ Oregon does not allow tip credits: tips cannot be counted against hourly pay, so
 
 ## What you enter
 
-- **Days worked**: hours, or start and end times (overnight shifts count on the start date). Rows can be marked approximate, and hours you don't know can stay empty. A split shift is two rows on the same date. You can paste lines from a timekeeping app or notes (`2026-06-01 8`, `6/2/2026 9am-5:30pm`). Lines that can't be read are shown back, not dropped, including a line holding two shifts (paste each shift on its own line). A shift over 16 hours from times gets an am/pm check. "Same as last week" repeats a week.
+- **Days worked**: hours, or start and end times (overnight shifts count on the start date). Rows can be marked approximate, and hours you don't know can stay empty. A split shift is two rows on the same date. You can paste lines from a timekeeping app or notes (`2026-06-01 8`, `6/2/2026 9am-5:30pm`). Lines that can't be read are shown back, not dropped, including a line holding two shifts (paste each shift on its own line). Times without am or pm that could be morning or evening (`6-10`) are shown back too, since the record prints the times; 24-hour times (`18:00-22:00`) need no suffix. A leading weekday (`Wed 9/3/2025 …`) is dropped when it matches the date and shown back when it doesn't. A shift over 16 hours from times gets an am/pm check. "Same as last week" repeats a week.
 - **Paychecks**: the first and last day each one covered, and the gross amount before deductions (0 if you weren't paid).
 - **About the job**: how you were paid, wage region, the day your employer's workweek starts (optional unless some 7-day stretch goes over 40 hours), hire date, and any promised hourly rates with the dates they started.
 
@@ -70,16 +70,9 @@ Minimum wage periods were checked against BOLI's [schedule](https://www.oregon.g
 
 [Overtime](https://www.oregon.gov/boli/employers/Pages/overtime.aspx), [meals and breaks](https://www.oregon.gov/boli/workers/Pages/meals-and-breaks.aspx) and [paychecks](https://www.oregon.gov/boli/workers/Pages/paychecks.aspx) were checked September 30, 2026. The [complaint portal](https://complaints.boli.oregon.gov/) was read logged-out on October 6, 2026, without creating an account, a draft or a submission. [Source receipts](https://greattombproductions.github.io/wage-owed-oregon/sources.json) identify each capture by SHA-256. There are no automatic freshness checks.
 
-## Development and verification
+## This repository
 
-Serve `site/` over HTTP (ES modules need it): `python3 -m http.server --directory site 8000`.
-
-- `node --test tests/test_calculator.mjs tests/test_journey.mjs`: single-week engine (periods, boundaries, inclusion semantics), plus journey cases. The journey cases cover uneven weeks across July 1, approximate round trips, 14-hour days and split shifts, the hire-date correction, totals under $50, out-of-coverage weeks, the 300-character draft, save and reopen, and pasted lines.
-- `python3 tests/run_browser_smoke.py`: drives the page in a browser. It checks paste, repeat, paychecks, the field sheet, the plain-text and print outputs, corrections and stops, save/clear/reopen and opt-in keeping. It also confirms that no request carries entries. Requires Playwright with Chromium available to Node.
-- `SMOKE_BASE=https://greattombproductions.github.io/wage-owed-oregon/ python3 tests/run_browser_smoke.py` runs the same check against the live page.
-- `bash deploy.sh --assemble-only`: local assembly only.
-
-Deployment runs the tests and a hygiene lint, then pushes **fast-forward** to the existing public repository. Browser tests find defects; they don't show that the page reduces anyone's work or that BOLI accepts its output.
+This repository is the published site: the files GitHub Pages serves, as built. Everything runs in the browser from these files. To try it locally, serve this directory over HTTP (`python3 -m http.server 8000`) and open http://localhost:8000/. The test suite and build scripts are kept with the source and aren't part of this repository.
 
 ## License
 
